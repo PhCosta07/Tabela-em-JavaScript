@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Lista com DOM</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- inicip da lista -->
+<ol style="--length: 5" role="list">
+ 
+		<li style="--i: 1">
+			<div class="list-container">
+				<div class="list">
+					<h3>Tarefas Pendentes</h3>
+					<input type="text" id="main-title" placeholder="Título">
+					<textarea name="main-description" id="main-description" placeholder="Descrição"></textarea>
+					<input type="file" id="main-image" accept="image/*">
+					<button onclick="addItem('main-title', 'main-description', 'main-image', 'main-list')">Adicionar</button>
+					<ul id="main-list"></ul>
+				</div>
+		</li>
+		<li style="--i: 2">
+			<div class="list">
+				<h3>Tarefas em Andamento</h3>
+				<input type="text" id="side-title" placeholder="Título">
+				<textarea name="side-description" id="side-description" placeholder="Descrição"></textarea>
+				<input type="file" id="side-image" accept="image/*">
+				<button onclick="addItem('side-title', 'side-description', 'side-image', 'side-list')">Adicionar</button>
+				<ul id="side-list"></ul>
+			</div>
+		</li>
+		<li style="--i: 3">
+			<div class="list">
+				<h3>Tarefas Concluidas</h3>
+				<input type="text" id="dessert-title" placeholder="Título">
+				<textarea name="dessert-description" id="dessert-description" placeholder="Descrição"></textarea>
+				<input type="file" id="dessert-image" accept="image/*">
+				<button onclick="addItem('dessert-title', 'dessert-description', 'dessert-image', 'dessert-list')">Adicionar</button>
+				<ul id="dessert-list"></ul>
+			</div>
+		</div>
+		</li>
+	 </section>
+   </main> 
+</ol>
+<!-- final da lista -->
+
+<hr class="featurette-divider">
+<footer class="container">
+	<p>© Pedro H.C. Silva & Pedro V. Tavares</p>
+  </footer>
+
+  
+</body>
+</html>
+<!--JavaScript-->
+<script>
+	function addItem(titleId, descriptionId, imageId, listId){
+		const titleElement = document.getElementById(titleId);
+		const descriptionElement = document.getElementById(descriptionId);
+		const imageElement = document.getElementById(imageId);
+		const title = titleElement.value;
+		const description = descriptionElement.value;
+		const imageFile = imageElement.files[0];
+
+		if (title.trim() !== ''){
+			const ulElement = document.getElementById(listId);
+			const liElement = document.createElement('li');
+			
+			const headerDiv = document.createElement('div');
+			headerDiv.classList.add('item-header');
+
+			const titleH4Element = document.createElement('h4');
+			titleH4Element.textContent = title;
+
+			const toggleButton = document.createElement('span');
+			toggleButton.textContent = 'v'; 
+			toggleButton.classList.add('toggle-button', 'down');
+			toggleButton.onclick = function() {
+				const desc = liElement.querySelector('.item-description');
+				const img = liElement.querySelector('.item-image');
+				desc.style.display = desc.style.display === 'none' ? 'block' : 'none';
+				if (img) {
+					img.style.display = img.style.display === 'none' ? 'block' : 'none';
+				}
+				
+				if (toggleButton.textContent === 'v') {
+					toggleButton.textContent = '^';
+					toggleButton.classList.remove('down');
+					toggleButton.classList.add('up');
+				} else {
+					toggleButton.textContent = 'v';
+					toggleButton.classList.remove('up');
+					toggleButton.classList.add('down');
+				}
+			};
+
+			const removeButton = document.createElement('button');
+			removeButton.textContent = 'Remover';
+			removeButton.classList.add('remove-button');
+			removeButton.onclick = function() {
+				ulElement.removeChild(liElement);
+			};
+
+			headerDiv.appendChild(toggleButton);
+			headerDiv.appendChild(titleH4Element);
+			headerDiv.appendChild(removeButton);
+			liElement.appendChild(headerDiv);
+			
+			if (description.trim() !== '') {
+				const descriptionPElement = document.createElement('p');
+				descriptionPElement.textContent = description;
+				descriptionPElement.classList.add('item-description');
+				liElement.appendChild(descriptionPElement);
+			}
+			if (imageFile) {
+				const reader = new FileReader();
+				reader.onload = function(event) {
+					const imgElement = document.createElement('img');
+					imgElement.src = event.target.result;
+					imgElement.classList.add('item-image');
+					liElement.appendChild(imgElement);
+				};
+				reader.readAsDataURL(imageFile);
+			}
+			ulElement.appendChild(liElement);
+
+			titleElement.value = '';
+			descriptionElement.value = '';
+			imageElement.value = '';
+		}
+	}
+</script>
